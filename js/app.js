@@ -10,16 +10,20 @@ var continer = document.getElementById('myList');
 var tableEl = document.createElement('table');
 var totalByHour=[];
 var totalCustsHours=0;
+var sections=[];
 //----------------------------
 //Total of Total Caluclted
 function totalPerHour ()
-{
+{ var temp=0;
   for (var i=0 ;i<14;i++)
   {
-    totalByHour.push(cookiesSeattle.result[i]+cookiesTokyo.result[i]+cookiesDubai.result[i]+cookiesParis.result[i]+cookiesLima.result[i]);
-    totalCustsHours+=totalByHour[i];
-  }
+    for(var s=0;s<sections.length;s++)
+      temp+=sections[s].result[i];
 
+    totalByHour.push(temp);
+    totalCustsHours+=temp;
+    temp=0;
+  }
 }
 //---------------
 //Table Header
@@ -74,7 +78,7 @@ function CookiesSection(location, min, max, avgCookies) {
   this.avgCookies = avgCookies;
   this.total = 0;
   this.result = [];
-
+  sections.push(this);
 }
 //--------
 //Random Customer Number
@@ -84,7 +88,7 @@ CookiesSection.prototype.randomCustNum = function () {
 //--------
 //Make The Table
 CookiesSection.prototype.htmlEdit = function () {
-
+  this.randomCustNum();
   var tdEls = document.createElement('td');
   var trEl = document.createElement('tr');
   tableEl.appendChild(trEl);
@@ -92,12 +96,10 @@ CookiesSection.prototype.htmlEdit = function () {
   var td = document.createElement('td');
   td.textContent = `${this.location}`;
   trEl.appendChild(td);
+
   for (var i = 6; i <= 19; i++) {
-
-
     var tdEl = document.createElement('td');
     this.result.push(Math.ceil(this.avgCookies * this.randomCustNum()));
-
     tdEl.textContent = `${this.result[i - 6]}`;
     trEl.appendChild(tdEl);
     this.total += this.result[i - 6];
@@ -109,31 +111,18 @@ CookiesSection.prototype.htmlEdit = function () {
 };
 //-------------
 //Create Obects
-var cookiesSeattle = new CookiesSection('Seattle', 23, 65, 6.3);
-var cookiesTokyo = new CookiesSection('Tokyo', 3, 24, 1.2);
-var cookiesDubai = new CookiesSection('Dubai', 11, 38, 3.7);
-var cookiesParis = new CookiesSection('Paris', 20, 38, 2.3);
-var cookiesLima = new CookiesSection('Lima', 2, 16, 4.6);
+new CookiesSection('Seattle', 23, 65, 6.3);
+new CookiesSection('Tokyo', 3, 24, 1.2);
+new CookiesSection('Dubai', 11, 38, 3.7);
+new CookiesSection('Paris', 20, 38, 2.3);
+new CookiesSection('Lima', 2, 16, 4.6);
 //------------
 //Table Header call
 headerRender();
 //--------------------------------------------
-//Call Objects Function ... Genrate Random Customer+Table body
-//#1
-cookiesSeattle.randomCustNum();
-cookiesSeattle.htmlEdit();
-//-----------#2
-cookiesTokyo.randomCustNum();
-cookiesTokyo.htmlEdit();
-//-----------#3
-cookiesDubai.randomCustNum();
-cookiesDubai.htmlEdit();
-//-----------#4
-cookiesParis.randomCustNum();
-cookiesParis.htmlEdit();
-//-----------#5
-cookiesLima.randomCustNum();
-cookiesLima.htmlEdit();
+//Call Objects Function ... Table body
+for(var s=0;s<sections.length;s++)
+  sections[s].htmlEdit();
 //-----------
 //Table Footer call
 footerRender();
