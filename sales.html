@@ -22,8 +22,31 @@
             </a>
         </header>
 
-        <main id="myList">
-
+        <main>
+            <section id="myList" class="row">
+                <form id="form">
+                    <fieldset>
+                        <legend>New Store Information</legend>
+                        <label for="name">New Store Name :</label>
+                        <input id='name' type="text" required pattern="*" placeholder="StoreJhon"
+                            oninvalid="this.setCustomValidity('Please Enter Valid name')"
+                            oninput="setCustomValidity('')">
+                        <label for="min">Minimum Customer:</label>
+                        <input id='min' type="number" required placeholder="123"
+                            oninvalid="this.setCustomValidity('Please Enter Valid number')"
+                            oninput="setCustomValidity('')">
+                        <label for="max">Maximum Customer:</label>
+                        <input id='max' type="number" required placeholder="456"
+                            oninvalid="this.setCustomValidity('Please Enter Valid number')"
+                            oninput="setCustomValidity('')">
+                        <label for="avg">Avarage Customer/Hour:</label>
+                        <input id='avg' type="number" step="0.01" required placeholder="4.2"
+                            oninvalid="this.setCustomValidity('Please Enter Valid number')"
+                            oninput="setCustomValidity('')">
+                        <input id='but' type="submit">
+                    </fieldset>
+                </form>
+            </section>
 
         </main>
 

@@ -8,26 +8,26 @@ function getRandomInt(min, max) {
 //---------------
 var continer = document.getElementById('myList');
 var tableEl = document.createElement('table');
-var totalByHour=[];
-var totalCustsHours=0;
-var sections=[];
+var totalByHour = [];
+var totalCustsHours = 0;
+var sections = [];
 //----------------------------
 //Total of Total Caluclted
-function totalPerHour ()
-{ var temp=0;
-  for (var i=0 ;i<14;i++)
-  {
-    for(var s=0;s<sections.length;s++)
-      temp+=sections[s].result[i];
+function totalPerHour() {
+  var temp = 0;
+  console.log(sections.length);
+  for (var i = 0; i < 14; i++) {
+    for (var s = 0; s < sections.length; s++)
+      temp += sections[s].result[i];
 
     totalByHour.push(temp);
-    totalCustsHours+=temp;
-    temp=0;
+    totalCustsHours += temp;
+    temp = 0;
   }
 }
 //---------------
 //Table Header
-function headerRender (){
+function headerRender() {
 
   continer.appendChild(tableEl);
   var thEl = document.createElement('tr');
@@ -36,12 +36,12 @@ function headerRender (){
   thEl.appendChild(thEls);
   for (var i = 6; i <= 19; i++) {
     thEls = document.createElement('th');
-    if (i <= 12){
+    if (i <= 12) {
       thEls.textContent = `${i}:00am `;
       thEl.appendChild(thEls);
     }
-    else{
-      thEls.textContent = `${i-12}:00pm`;
+    else {
+      thEls.textContent = `${i - 12}:00pm`;
       thEl.appendChild(thEls);
     }
   }
@@ -51,23 +51,24 @@ function headerRender (){
 }
 //---------------------------
 //total of total
-function footerRender (){
+function footerRender() {
+  console.log(sections.length);
   totalPerHour();
   var trEl = document.createElement('tr');
   tableEl.appendChild(trEl);
   var tdEls = document.createElement('td');
   trEl.appendChild(tdEls);
-  tdEls.textContent='Totals';
+  tdEls.textContent = 'Totals';
   for (var i = 6; i <= 19; i++) {
     tdEls = document.createElement('td');
 
-    tdEls.textContent = `${totalByHour[i-6]}`;
+    tdEls.textContent = `${totalByHour[i - 6]}`;
     trEl.appendChild(tdEls);
 
   }
   tdEls = document.createElement('td');
   trEl.appendChild(tdEls);
-  tdEls.textContent=`${totalCustsHours}`;
+  tdEls.textContent = `${totalCustsHours}`;
 }
 //Create Object Constructor
 //-----------------------
@@ -110,6 +111,33 @@ CookiesSection.prototype.htmlEdit = function () {
 
 };
 //-------------
+
+//---------------------------------------------------------The Form
+var nameMarket, min, max, avg;
+var form = document.getElementById('form');
+form.addEventListener('submit', addMarket);
+var flag = true;
+
+function addMarket(event) {
+  event.preventDefault();// stop refresh
+  nameMarket = event.target.name.value;
+  min = Number(event.target.min.value);
+  max = Number(event.target.max.value);
+  avg = Number(event.target.avg.value);
+  new CookiesSection(nameMarket, min, max, avg);
+  flag=false;
+  if (!flag) {
+    tableEl.removeChild(tableEl.lastChild);
+    totalByHour=[];
+    totalCustsHours=0;
+    sections[sections.length - 1].htmlEdit();
+    footerRender();
+    form.reset();
+  }
+
+}
+form.reset();
+//-------------------------------------------------
 //Create Obects
 new CookiesSection('Seattle', 23, 65, 6.3);
 new CookiesSection('Tokyo', 3, 24, 1.2);
@@ -117,12 +145,19 @@ new CookiesSection('Dubai', 11, 38, 3.7);
 new CookiesSection('Paris', 20, 38, 2.3);
 new CookiesSection('Lima', 2, 16, 4.6);
 //------------
+
+//------------
 //Table Header call
 headerRender();
 //--------------------------------------------
 //Call Objects Function ... Table body
-for(var s=0;s<sections.length;s++)
+for (var s = 0; s < sections.length; s++) {
   sections[s].htmlEdit();
+}
 //-----------
 //Table Footer call
-footerRender();
+if (flag) {
+  footerRender();
+}
+
+

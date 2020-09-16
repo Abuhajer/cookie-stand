@@ -75,7 +75,7 @@ section h2,footer h2{
     padding-bottom: 15px;
 
 }
-section p,footer p{
+section p,footer p,form label{
     font-family: Arial, Helvetica, sans-serif;
     color: orangered;
     display: block;
@@ -205,7 +205,47 @@ div {
     z-index: -1;
 }
 label {
-    padding: 50px;
+    padding: 30px;
+    display: inline-block;
+    
+}
+
+form legend {
+    font-family: 'Josefin Sans', sans-serif;
+    color: yellow;  
+    font-size: 60px;
+    text-align: center;
+    padding-top: 30px;
+ 
+    text-shadow:5px  10px 10px  red; 
+}
+form input{
+    display: block;
+    margin: auto;
+    width: 30%;
+    height: 50px;
+}
+
+input[type="submit"]{
+margin: auto;
+margin-top: 20px;
+}
+form {
+ background-color: rgba(13, 226, 190, 0.144);
+
+}
+
+fieldset{
+    border:solid 1px var(--border-color);
+background-color: rgba(13, 98, 226, 0.26);
+border-radius: 20px;
+    display: block;
+    min-inline-size: min-content;
+    width: 50%;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+    box-shadow:5px  10px 10px  red; 
 }
 footer{
 clear: both;
