@@ -8,12 +8,15 @@ function getRandomInt(min, max) {
 //---------------
 var continer = document.getElementById('myList');
 var tableEl = document.createElement('table');
-var totalByHour = [];
-var totalCustsHours = 0;
 var sections = [];
+var totalByHour ;
+var totalCustsHours;
+
 //----------------------------
 //Total of Total Caluclted
 function totalPerHour() {
+  totalCustsHours=0;
+  totalByHour = [];
   var temp = 0;
   console.log(sections.length);
   for (var i = 0; i < 14; i++) {
