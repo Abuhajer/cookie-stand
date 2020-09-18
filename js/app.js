@@ -1,24 +1,29 @@
 'use strict';
 
+// Global Variables
+var continer = document.getElementById('myList');
+var tableEl = document.createElement('table');
+var sections = [];
+var totalByHour;
+var totalCustsHours;
+//---------------
+//Genrate Random Number
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
-//---------------
-var continer = document.getElementById('myList');
-var tableEl = document.createElement('table');
-var sections = [];
-var totalByHour ;
-var totalCustsHours;
-
+//--------
+//Random Customer Number
+CookiesSection.prototype.randomCustNum = function () {
+  return getRandomInt(this.min, this.max);
+};
 //----------------------------
-//Total of Total Caluclted
+//Total of Total Caluclter
 function totalPerHour() {
-  totalCustsHours=0;
+  totalCustsHours = 0;
   totalByHour = [];
   var temp = 0;
-  console.log(sections.length);
   for (var i = 0; i < 14; i++) {
     for (var s = 0; s < sections.length; s++)
       temp += sections[s].result[i];
@@ -28,8 +33,19 @@ function totalPerHour() {
     temp = 0;
   }
 }
+//Create Object Constructor
+//-----------------------
+function CookiesSection(location, min, max, avgCookies) {
+  this.location = location;
+  this.min = min;
+  this.max = max;
+  this.avgCookies = avgCookies;
+  this.total = 0;
+  this.result = [];
+  sections.push(this);
+}
 //---------------
-//Table Header
+//Table Header (Header)
 function headerRender() {
 
   continer.appendChild(tableEl);
@@ -52,45 +68,8 @@ function headerRender() {
   thEl.appendChild(thEls);
   thEls.textContent = 'Daily Location Total';
 }
-//---------------------------
-//total of total
-function footerRender() {
-  console.log(sections.length);
-  totalPerHour();
-  var trEl = document.createElement('tr');
-  tableEl.appendChild(trEl);
-  var tdEls = document.createElement('td');
-  trEl.appendChild(tdEls);
-  tdEls.textContent = 'Totals';
-  for (var i = 6; i <= 19; i++) {
-    tdEls = document.createElement('td');
-
-    tdEls.textContent = `${totalByHour[i - 6]}`;
-    trEl.appendChild(tdEls);
-
-  }
-  tdEls = document.createElement('td');
-  trEl.appendChild(tdEls);
-  tdEls.textContent = `${totalCustsHours}`;
-}
-//Create Object Constructor
-//-----------------------
-function CookiesSection(location, min, max, avgCookies) {
-  this.location = location;
-  this.min = min;
-  this.max = max;
-  this.avgCookies = avgCookies;
-  this.total = 0;
-  this.result = [];
-  sections.push(this);
-}
 //--------
-//Random Customer Number
-CookiesSection.prototype.randomCustNum = function () {
-  return getRandomInt(this.min, this.max);
-};
-//--------
-//Make The Table
+//Make The Table (body)
 CookiesSection.prototype.htmlEdit = function () {
   this.randomCustNum();
   var tdEls = document.createElement('td');
@@ -111,15 +90,56 @@ CookiesSection.prototype.htmlEdit = function () {
   }
   tdEls.textContent = `${this.total}`;
   trEl.appendChild(tdEls);
-
 };
-//-------------
+//---------------------------
+//Footer
+function footerRender() {
+  totalPerHour();
+  var trEl = document.createElement('tr');
+  tableEl.appendChild(trEl);
+  var tdEls = document.createElement('td');
+  trEl.appendChild(tdEls);
+  tdEls.textContent = 'Totals';
+  for (var i = 6; i <= 19; i++) {
+    tdEls = document.createElement('td');
 
-//---------------------------------------------------------The Form
+    tdEls.textContent = `${totalByHour[i - 6]}`;
+    trEl.appendChild(tdEls);
+
+  }
+  tdEls = document.createElement('td');
+  trEl.appendChild(tdEls);
+  tdEls.textContent = `${totalCustsHours}`;
+}
+//------------------
+//EditStore
+function editStore(market, min, max, avg, i) {
+  sections[i].min = min;
+  sections[i].max = max;
+  sections[i].avgCookies = avg;
+  sections[i].total = 0;
+  sections[i].result = [];
+  var temp = '';
+  var l = tableEl.rows.length - 1;
+  for (var r = 1; r < tableEl.rows.length - 1; r++) {
+    temp = tableEl.rows[r].cells[0].textContent;
+    if (market === temp)
+      break;
+  }
+  tableEl.deleteRow(r);
+  tableEl.insertRow(r);
+  tableEl.removeChild(tableEl.lastChild);
+  sections[i].htmlEdit();
+  tableEl.rows[r].innerHTML = tableEl.rows[l].innerHTML;
+  tableEl.removeChild(tableEl.lastChild);
+  footerRender();
+}
+//---------------------------------------------------------
+//The Form
 var nameMarket, min, max, avg;
 var form = document.getElementById('form');
 form.addEventListener('submit', addMarket);
-var flag = true;
+var flag = true; //print footer first time
 
 function addMarket(event) {
   event.preventDefault();// stop refresh
@@ -127,19 +147,30 @@ function addMarket(event) {
   min = Number(event.target.min.value);
   max = Number(event.target.max.value);
   avg = Number(event.target.avg.value);
-  new CookiesSection(nameMarket, min, max, avg);
-  flag=false;
-  if (!flag) {
+
+  for (var l = 0; l < sections.length; l++) {
+    if (nameMarket === sections[l].location) {
+      editStore(nameMarket, min, max, avg, l);
+      form.reset();
+      flag = false;
+      break;
+    }
+    else {
+      flag = true;
+    }
+  }
+
+  if (flag) {
+    new CookiesSection(nameMarket, min, max, avg);
     tableEl.removeChild(tableEl.lastChild);
-    totalByHour=[];
-    totalCustsHours=0;
     sections[sections.length - 1].htmlEdit();
     footerRender();
     form.reset();
+    flag = false;
   }
 
 }
-form.reset();
+
 //-------------------------------------------------
 //Create Obects
 new CookiesSection('Seattle', 23, 65, 6.3);
